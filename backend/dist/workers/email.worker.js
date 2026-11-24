@@ -7,6 +7,14 @@ const bullmq_1 = require("bullmq");
 const redis_js_1 = __importDefault(require("../config/redis.js"));
 const prisma_js_1 = __importDefault(require("../config/prisma.js"));
 const mail_service_js_1 = require("../services/mail.service.js");
+const mail_js_1 = require("../config/mail.js");
+if (mail_service_js_1.useBrevo) {
+    console.log("📧 Email provider: Brevo HTTP API");
+}
+else {
+    console.log("📧 Email provider: SMTP");
+    void (0, mail_js_1.verifyTransporter)();
+}
 const worker = new bullmq_1.Worker("email-queue", async (job) => {
     const { emailId } = job.data;
     const email = await prisma_js_1.default.emailJob.findUnique({
@@ -30,14 +38,18 @@ const worker = new bullmq_1.Worker("email-queue", async (job) => {
         console.log("✅ Email Sent");
     }
     catch (err) {
-        await prisma_js_1.default.emailJob.update({
-            where: {
-                id: email.id,
-            },
-            data: {
-                status: "FAILED",
-            },
-        });
+        // Only mark FAILED once BullMQ has no retries left.
+        const maxAttempts = job.opts.attempts ?? 1;
+        if (job.attemptsMade + 1 >= maxAttempts) {
+            await prisma_js_1.default.emailJob.update({
+                where: {
+                    id: email.id,
+                },
+                data: {
+                    status: "FAILED",
+                },
+            });
+        }
         throw err;
     }
 }, {

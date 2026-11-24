@@ -1,7 +1,15 @@
 import { Worker } from "bullmq";
 import redis from "../config/redis.js";
 import prisma from "../config/prisma.js";
-import { sendEmail } from "../services/mail.service.js";
+import { sendEmail, useBrevo } from "../services/mail.service.js";
+import { verifyTransporter } from "../config/mail.js";
+
+if (useBrevo) {
+  console.log("📧 Email provider: Brevo HTTP API");
+} else {
+  console.log("📧 Email provider: SMTP");
+  void verifyTransporter();
+}
 
 const worker = new Worker(
   "email-queue",
@@ -36,14 +44,18 @@ const worker = new Worker(
 
       console.log("✅ Email Sent");
     } catch (err) {
-      await prisma.emailJob.update({
-        where: {
-          id: email.id,
-        },
-        data: {
-          status: "FAILED",
-        },
-      });
+      // Only mark FAILED once BullMQ has no retries left.
+      const maxAttempts = job.opts.attempts ?? 1;
+      if (job.attemptsMade + 1 >= maxAttempts) {
+        await prisma.emailJob.update({
+          where: {
+            id: email.id,
+          },
+          data: {
+            status: "FAILED",
+          },
+        });
+      }
 
       throw err;
     }

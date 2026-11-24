@@ -74,6 +74,7 @@ npm run dev
 ```
 
 The backend server starts the BullMQ worker in the same process.
+Set `RUN_EMAIL_WORKER=false` only when another worker is already processing the same Redis queue.
 
 ## Frontend Setup
 
