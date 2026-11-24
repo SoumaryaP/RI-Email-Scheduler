@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-cream: #fbf6ec;
+  --color-brand-ink: #14171f;
+  --color-brand-muted: #6b7280;
+  --color-brand-line: #e7e1d2;
+  --color-brand-navy: #16214a;
+  --color-brand-navy-hover: #202e63;
+  --color-brand-amber: #f5a524;
+  --color-brand-teal-deep: #0d322e;
+  --color-brand-teal-mid: #12463f;
+  --color-brand-mint: #2dd4bf;
+}
+
+body {
+  background: var(--color-brand-cream);
+  color: var(--color-brand-ink);
+}
