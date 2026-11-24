@@ -11,7 +11,11 @@ const auth_routes_js_1 = __importDefault(require("./routes/auth.routes.js"));
 const rateLimiter_js_1 = require("./middleware/rateLimiter.js");
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)({
-    origin: "http://localhost:3000",
+    origin: [
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "https://new-email-scheduler.vercel.app",
+    ],
     credentials: true,
 }));
 app.use((0, helmet_1.default)());
