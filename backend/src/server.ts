@@ -1,6 +1,5 @@
-import dotenv from "dotenv";
-dotenv.config();
-
+import "dotenv/config";
+import "./workers/email.worker.js";
 import app from "./app.js";
 
 const PORT = Number(process.env.PORT) || 5000;

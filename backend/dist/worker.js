@@ -1,7 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-require("./workers/email.worker.js");
-console.log("🚀 Email Worker Started");
 const email_queue_js_1 = require("./queue/email.queue.js");
 require("./workers/email.worker.js");
 console.log("🚀 Email Worker Started");

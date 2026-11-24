@@ -77,11 +77,3 @@ worker.on("failed", (job, err) => {
 worker.on("error", (err) => {
   console.error("🔥 Worker Error:", err);
 });
-worker.on("completed", (job) => {
-  console.log(`✅ Job ${job.id} completed`);
-});
-
-worker.on("failed", (job, err) => {
-  console.error(`❌ Job ${job?.id} failed`);
-  console.error(err);
-});

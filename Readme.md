@@ -73,11 +73,7 @@ npx prisma migrate deploy
 npm run dev
 ```
 
-5. Start the background worker in a second terminal:
-
-```bash
-npm run worker
-```
+The backend server starts the BullMQ worker in the same process.
 
 ## Frontend Setup
 
@@ -111,7 +107,7 @@ http://localhost:3000
 From `backend/`:
 
 - `npm run dev` - Run the Express server in watch mode
-- `npm run worker` - Run the email queue worker
+- `npm run worker` - Run the email queue worker as a separate process (use this only when the server is not also starting a worker)
 - `npm run build` - Compile TypeScript to `dist/`
 - `npm run start` - Start the compiled backend from `dist/`
 
@@ -158,13 +154,12 @@ This repository does not include a license. Add one if you plan to share or publ
 
 ## Running all services (development)
 
-This project includes three parts that typically run during development:
+This project includes two processes that typically run during development:
 
 - Frontend (Next.js) — serves the web UI on `http://localhost:3000`
-- Backend (Express) — API server on `http://localhost:5000`
-- Worker (BullMQ) — background email processing
+- Backend (Express + BullMQ worker) — API server on `http://localhost:5000` and background email processing
 
-On Windows you can use the provided PowerShell helper from the repository root to open three terminals and start each service:
+On Windows you can use the provided PowerShell helper from the repository root to open two terminals and start both processes:
 
 ```powershell
 .\run-all.ps1
@@ -179,8 +174,5 @@ npm run dev
 
 cd ../backend
 npm install
-npm run dev        # starts the API server
-npm run worker     # starts the worker in another terminal
+npm run dev        # starts the API server and the email worker
 ```
-
-If you prefer a single-process dev script, I can add a root `package.json` with `concurrently` to run them together. Let me know which you prefer.

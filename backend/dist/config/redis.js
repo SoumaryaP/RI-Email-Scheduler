@@ -5,13 +5,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 require("dotenv/config");
 const ioredis_1 = __importDefault(require("ioredis"));
-const redisHost = process.env.REDIS_HOST || "127.0.0.1";
+const isProduction = process.env.NODE_ENV === "production";
+const configuredHost = process.env.REDIS_HOST;
+const redisHost = configuredHost || "127.0.0.1";
 const redisPort = Number(process.env.REDIS_PORT) || 6379;
-const useTls = process.env.REDIS_TLS === "true";
+const redisPassword = process.env.REDIS_PASSWORD;
+if (isProduction && !configuredHost) {
+    throw new Error("REDIS_HOST must be configured in production");
+}
+if (isProduction && !redisPassword) {
+    throw new Error("REDIS_PASSWORD must be configured in production");
+}
+const useTls = process.env.REDIS_TLS?.toLowerCase() === "true" ||
+    redisHost.endsWith(".upstash.io");
 const redis = new ioredis_1.default({
     host: redisHost,
     port: redisPort,
-    password: process.env.REDIS_PASSWORD || undefined,
+    password: redisPassword,
     tls: useTls ? {} : undefined,
     maxRetriesPerRequest: null,
 });
