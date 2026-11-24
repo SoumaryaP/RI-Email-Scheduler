@@ -60,7 +60,11 @@ const googleLogin = async (req, res) => {
     }
     catch (error) {
         console.error("Google Auth Error:", error);
-        res.status(500).json({ error: "Authentication failed" });
+        const details = error instanceof Error ? error.message : String(error);
+        res.status(500).json({
+            error: "Authentication failed",
+            details,
+        });
     }
 };
 exports.googleLogin = googleLogin;
