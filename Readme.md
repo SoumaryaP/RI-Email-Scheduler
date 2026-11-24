@@ -153,3 +153,32 @@ From `frontend/`:
 ## License
 
 This repository does not include a license. Add one if you plan to share or publish this project.
+
+## Running all services (development)
+
+This project includes three parts that typically run during development:
+
+- Frontend (Next.js) — serves the web UI on `http://localhost:3000`
+- Backend (Express) — API server on `http://localhost:5000`
+- Worker (BullMQ) — background email processing
+
+On Windows you can use the provided PowerShell helper from the repository root to open three terminals and start each service:
+
+```powershell
+.\run-all.ps1
+```
+
+Alternatively, start them manually in separate terminals:
+
+```powershell
+cd frontend
+npm install
+npm run dev
+
+cd ../backend
+npm install
+npm run dev        # starts the API server
+npm run worker     # starts the worker in another terminal
+```
+
+If you prefer a single-process dev script, I can add a root `package.json` with `concurrently` to run them together. Let me know which you prefer.
