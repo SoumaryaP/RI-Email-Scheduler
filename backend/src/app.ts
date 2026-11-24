@@ -11,7 +11,11 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: [
+      "http://localhost:3000",
+      "http://localhost:5173",
+      "https://new-email-scheduler.vercel.app",
+    ],
     credentials: true,
   })
 );
